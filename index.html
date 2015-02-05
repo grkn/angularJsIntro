@@ -1,0 +1,102 @@
+<html lang="en" ng-app="app_controller">
+	<head>
+	
+		<meta http-equiv="content-type" content="text/html; charset=iso-8859-9"/>
+		<script src="angular.js"></script>
+		<script type="text/javascript">
+			var app_controller = angular.module('app_controller',[]);
+			app_controller.controller('phoneList',function($scope){
+				$scope.phones_list = [
+					{'name': 'Nexus S', 'age' : '25',
+						'snippet': 'Fast just got faster with Nexus S.'},
+					{'name': 'Motorola XOOM™ with Wi-Fi', 'age' : '1',
+						'snippet': 'The Next, Next Generation tablet.'},
+					{'name': 'MOTOROLA XOOM™', 'age' : '15',
+						'snippet': 'The Next, Next Generation tablet.'},
+					{'name': 'Netaş', 'age' : "-1",
+						'snippet': 'Netaş Phone and Tablet (İstanbul).'}
+				];
+				
+				$scope.comparee = function(actual,expected){
+					return actual == expected;
+				}
+				
+				$scope.validate = function(){
+					console.log("Validate");
+				};
+				$scope.myData= "Cem";
+				$scope.orderProp = 'age';
+			});
+			
+			app_controller.controller('deneme',function($scope){
+					$scope.data = 'gurkan';
+			
+			});
+			
+			app_controller.controller('httpController',function($scope,$http){
+				$http.get('phones/phones.json').success(function(data){
+					$scope.phones = data;
+				});
+				
+				$scope.query = function (el){
+					$http.get('phones/phones.json').success(function(data){
+						console.log(data);
+					});
+				};
+				
+				$scope.orderProp = 'age';
+			});
+		</script>
+	</head>
+	<body>
+		<ol>
+			<li>
+			<p>Nothing here {{'yet'+'!'}}</p>
+			</li>
+			<li>
+				<ul ng-controller="phoneList">
+					<li ng-repeat="phone in phones_list">
+						<span>{{phone.name}}</span>
+						<p>{{phone.snippet}}</p>
+					</li>
+				</ul>
+			</li>
+			<li ng-controller="phoneList">
+				<ul>
+					Search: <input ng-model="query">
+					<li ng-click="validate()" ng-repeat="phone in phones_list | filter:query">
+						<span>{{phone.name}}</span>
+						<p>{{phone.snippet}}</p>
+					</li>
+				</ul>
+			</li>
+			<li ng-controller="phoneList">
+				Search: <input ng-model="query">
+				Sort by:
+				<select ng-model="orderProp">
+				  <option value="name">Alphabetical</option>
+				  <option value="age">Newest</option>
+				</select>
+				<ul class="phones">
+				  <li ng-repeat="phone in phones_list | filter:query:comparee | orderBy:orderProp">
+					<span>{{phone.name}}</span>
+					<p>{{phone.snippet}}</p>
+				  </li>
+				</ul>
+			</li>
+			<li ng-controller="httpController">
+				<ul>
+					<li ng-repeat = "phone in phones">
+						<span ng-click="query(phone.id)">{{phone.name}}</span>
+						<p>{{phone.age}}</p>
+					</li>
+				</ul>
+			</li>
+			
+			<li ng-controller = "deneme">
+				{{data}}
+			</li>
+		</ol>
+		
+	</body>
+</html>
